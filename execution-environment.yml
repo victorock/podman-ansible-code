@@ -1,0 +1,27 @@
+---
+version: 1
+build_arg_defaults:
+## BUGGY
+#  EE_BASE_IMAGE: 'registry.redhat.io/ansible-automation-platform-20-early-access/ee-minimal-rhel8'
+#  EE_BUILDER_IMAGE: 'registry.redhat.io/ansible-automation-platform-20-early-access/ansible-builder-rhel8'
+#####
+  EE_BASE_IMAGE: 'quay.io/ansible/ansible-runner:devel'
+  EE_BUILDER_IMAGE: 'quay.io/ansible/ansible-builder:latest'
+dependencies:
+  galaxy: requirements.yml
+  system: bindep.txt
+  python: requirements.txt
+additional_build_steps:
+  append: |
+    RUN groupadd -g 500 ansible; \
+      useradd -u 1000 -g 500 -md /home/ansible ansible; \
+      echo ansible:5000:5000 > /etc/subuid; \
+      echo ansible:5000:5000 > /etc/subgid
+    VOLUME /home/ansible/.local/share/containers/storage
+    COPY --chown=1000:500 /root /
+    WORKDIR /home/ansible
+    USER 1000
+    EXPOSE 2222
+    CMD ["-D", "-e", "-q"]
+    ENTRYPOINT ["/usr/sbin/sshd"]
+

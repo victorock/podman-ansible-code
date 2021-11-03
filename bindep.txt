@@ -1,0 +1,6 @@
+openssh-server
+podman
+buildah
+skopeo
+crun
+git

@@ -1,0 +1,5 @@
+ansible-core
+ansible-navigator
+ansible-runner
+ansible-builder
+yamllint
